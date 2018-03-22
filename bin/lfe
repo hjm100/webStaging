@@ -1,0 +1,51 @@
+#!/usr/bin/env node --harmony
+
+'use strict'
+// 定义脚手架的文件路径
+process.env.NODE_PATH = __dirname + '/../node_modules/'
+
+const program = require('commander')
+
+// 定义当前版本
+program
+    .version('1.0')
+
+// 定义使用方法
+program
+    .usage('<command>')
+
+program
+    .command('new')
+    .description('创建新的项目')
+    .alias('n')
+    .action(() => {
+        require('../command/new.js')()
+    })
+
+program
+    .command('switch')
+    .description('选择当前项目')
+    .alias('sw')
+    .action(() => {
+        require('../command/switch')()
+    })
+program
+    .command('delete')
+    .description('删除某个项目')
+    .alias('de')
+    .action(() => {
+        require('../command/delete')()
+    })
+program
+    .command('current')
+    .description('当前项目为')
+    .alias('cu')
+    .action(() => {
+        require('../command/current')()
+    })
+
+program.parse(process.argv)
+
+if (!program.args.length) {
+    program.help()
+}
