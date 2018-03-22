@@ -1,4 +1,12 @@
 'use strict'
+const cpy = require('cpy')
+const _config = require('../config/config.json')
+
+// 获取当前项目名称
+
+const eventName = _config.eventName
+
+
 require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
@@ -14,20 +22,15 @@ const webpackConfig = require('./webpack.prod.conf')
 const spinner = ora('building for production...')
 spinner.start()
 
-// const cpy = require('cpy') //当找不到打包方法的时候使用直接拷贝的方法转移文件
-// const _config = require('../config/config.json')
-// // 获取当前项目名称
-// const eventName = _config.eventName
-
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
-  webpack(webpackConfig, (err, stats) => {
+  webpack(webpackConfig, function (err, stats) {
     spinner.stop()
     if (err) throw err
     process.stdout.write(stats.toString({
       colors: true,
       modules: false,
-      children: false, // If you are using ts-loader, setting this to true will make TypeScript errors show up during build.
+      children: false,
       chunks: false,
       chunkModules: false
     }) + '\n\n')
@@ -36,11 +39,10 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       console.log(chalk.red('  Build failed with errors.\n'))
       process.exit(1)
     }
-
-    // console.log(eventName)//如果有不符合打包规则的文件直接拷贝过去，比如.lua
-    // cpy([path.resolve(__dirname, `../src/${eventName}/apple-app-site-association`)], path.resolve(__dirname, `../dist/${eventName}`)).then(() => {
-    //   console.log('转移文件成功')
-    // })    
+    console.log(eventName)
+    cpy([path.resolve(__dirname, `../src/${eventName}/apple-app-site-association`)], path.resolve(__dirname, `../dist/${eventName}`)).then(() => {
+      console.log('转移文件成功')
+    })
 
     console.log(chalk.cyan('  Build complete.\n'))
     console.log(chalk.yellow(
